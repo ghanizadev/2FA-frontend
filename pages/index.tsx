@@ -27,7 +27,7 @@ const Home = () => {
   }, [code]);
 
   React.useEffect(() => {
-    const socket = io("ws://localhost:3333");
+    const socket = io("ws://gd-authenticator-backend.herokuapp.com/");
 
     socket.on("connect", () => {
       socket.emit("ack");

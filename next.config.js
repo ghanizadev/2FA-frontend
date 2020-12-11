@@ -1,5 +1,5 @@
 module.exports = {
   env: {
-    SERVER_URL: "http://localhost:3333"
+    SERVER_URL: "https://gd-authenticator-backend.herokuapp.com"
   }
 }
