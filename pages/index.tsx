@@ -29,7 +29,7 @@ const Home = () => {
   }, [payload.code]);
 
   React.useEffect(() => {
-    const socket = io(`ws://${process.env.SERVER_URL}`);
+    const socket = io(`wss://${process.env.SERVER_URL}`);
 
     socket.on("connect", () => {
       socket.emit("ack");
