@@ -19,7 +19,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }
-    const userDataResponse = await axios.post(process.env.SERVER_URL + "/client/get-user", qs.stringify(body), config);
+    const userDataResponse = await axios.post(`http://${process.env.SERVER_URL}/client/get-user`, qs.stringify(body), config);
 
     if(userDataResponse){
       const {name, email, avatar} = userDataResponse.data;
