@@ -18,16 +18,18 @@ const routine = (timer: number, callback: () => void) => {
 };
 
 const Home = () => {
-  const [payload, setPayload] = React.useState();
-  const [code, setCode] = React.useState("");
+  const [payload, setPayload] = React.useState({
+    code: "",
+    expires: "",
+  });
   const router = useRouter();
 
   React.useEffect(() => {
-    console.log(code);
-  }, [code]);
+    process.env.NODE_ENV === "development" && console.log(payload.code);
+  }, [payload.code]);
 
   React.useEffect(() => {
-    const socket = io("wss://gd-authenticator-backend.herokuapp.com/");
+    const socket = io(`ws://${process.env.SERVER_URL}`);
 
     socket.on("connect", () => {
       socket.emit("ack");
@@ -36,12 +38,11 @@ const Home = () => {
     socket.on("code", (data: string) => {
       const parsed = JSON.parse(data);
 
-      setCode(parsed._code);
-
       if (!payload) {
-        routine(parsed._expires, () => socket.emit("generate"));
-        setPayload(parsed);
+        routine(parsed.expires, () => socket.emit("generate"));
       }
+
+      setPayload(parsed);
     });
 
     socket.on("permission", async (body: any) => {
@@ -53,7 +54,7 @@ const Home = () => {
     return () => {
       socket.close();
       clearInterval(t);
-    }
+    };
   }, []);
 
   return (
@@ -61,19 +62,11 @@ const Home = () => {
       <Content>
         <section>
           <Title>Authorize this application</Title>
-          <ul style={{marginLeft: 20}}>
-            <li>
-              Open you mobile application;
-            </li>
-            <li>
-              Login into your account;
-            </li>
-            <li>
-              Open the authenticator;
-            </li>
-            <li>
-              Scan the QR Code;
-            </li>
+          <ul style={{ marginLeft: 20 }}>
+            <li>Open you mobile application;</li>
+            <li>Login into your account;</li>
+            <li>Open the authenticator;</li>
+            <li>Scan the QR Code;</li>
           </ul>
         </section>
         <section>
@@ -82,7 +75,7 @@ const Home = () => {
             fgColor="rgba(152,12,156,1)"
             bgColor="#fff"
             level={"H"}
-            value={code}
+            value={payload.code}
           />
         </section>
       </Content>
